@@ -66,9 +66,24 @@ body {
     transform: translateX(0%);
   }
 }
-/*::view-transition-old(root) {
+::view-transition-group(*),
+::view-transition-new(*),
+::view-transition-old(*) {
+  animation-name: none;
+}
+
+::view-transition-new(page-default-forward) {
+  animation: 0.25s ease-in-out both push-move-in-from-right;
+}
+::view-transition-old(page-default-forward) {
   animation: 0.25s ease-in-out both push-move-out-left;
 }
-::view-transition-new(root) {
-  animation: 0.25s ease-in-out both push-move-in-from-right;
-}*/
+
+::view-transition-new(page-default-backward) {
+  animation: 0.25s ease-in-out both pop-move-in-from-left;
+  z-index: 1;
+}
+::view-transition-old(page-default-backward) {
+  animation: 0.25s ease-in-out both pop-move-out-right;
+  z-index: 2;
+}

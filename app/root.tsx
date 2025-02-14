@@ -5,13 +5,13 @@ import {
   Meta,
   Outlet,
   Scripts,
-  ScrollRestoration, useRouteLoaderData,
+  ScrollRestoration, useLocation, useRouteLoaderData,
 } from 'react-router';
 
 import type { Route } from "./+types/root";
 import "./app.css";
 import { scrollRestorationCookie } from '~/cookies.server';
-import { useEffect } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -61,8 +61,46 @@ export function Layout({ children }: { children: React.ReactNode }) {
     history.scrollRestoration = value;
     scrollRestoration = value;
   }, [data?.scrollRestoration]);
+
+  const location = useLocation();
+  const currentIndex = useRef(0); // Track the current index
+  const transitionRef = useRef('');
+  const htmlElementRef = useRef<HTMLHtmlElement>(null);
+
+  useLayoutEffect(() => {
+    const handlePopState = (event) => {
+      const newIndex = event.state?.idx || 0;
+
+      if (transitionRef.current) {
+        htmlElementRef.current?.classList.remove(transitionRef.current);
+      }
+
+      if (newIndex < currentIndex.current) {
+        console.log('Back navigation');
+        transitionRef.current = '[view-transition-name:page-default-backward]';
+      } else if (newIndex > currentIndex.current) {
+        console.log('Forward navigation');
+        transitionRef.current = '[view-transition-name:page-default-forward]';
+      }
+
+      htmlElementRef.current?.classList.add(transitionRef.current);
+      // Update the current index
+      currentIndex.current = newIndex;
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [location]);
+
+  useLayoutEffect(() => {
+    currentIndex.current = history.state?.idx || 0;
+  }, [location]);
+
   return (
-    <html lang="en">
+    <html lang="en" ref={htmlElementRef}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
