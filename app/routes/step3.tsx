@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { useContext } from 'react';
-import { TransitionContext } from '~/root';
+import { useTransitionContext } from '~/transition-context';
 
 export const loader = async () => {
   await new Promise((resolve) => setTimeout(resolve, 300));
@@ -8,13 +8,14 @@ export const loader = async () => {
 };
 
 export default function Step2() {
-  const context = useContext(TransitionContext);
+  const context = useTransitionContext();
 
   const onForwardNavigation = () => {
+    console.log("TEST", context);
     if (context === null) {
       return
     }
-    context('[view-transition-name:page-default-forward]');
+    context.setTransition('[view-transition-name:page-default-forward]');
   }
 
   return (

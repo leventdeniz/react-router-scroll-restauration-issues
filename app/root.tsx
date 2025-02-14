@@ -11,7 +11,8 @@ import {
 import type { Route } from "./+types/root";
 import "./app.css";
 import { scrollRestorationCookie } from '~/cookies.server';
-import React, { useEffect, useLayoutEffect, useRef } from 'react';
+import React, { useContext, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import TransitionContextProvider from '~/transition-context';
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -54,7 +55,9 @@ export function headers({ loaderHeaders }: Route.HeadersArgs) {
 
 let scrollRestoration: typeof history.scrollRestoration = "auto";
 
-export const TransitionContext = React.createContext<((transition: string) => void) | null>(null);
+const TransitionContext = React.createContext<({ setTransition: (transition: string) => void; transition: string }) | null>(null);
+
+export const useTransitionContext = () => useContext(TransitionContext);
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const data = useRouteLoaderData<typeof loader>("root");
@@ -106,6 +109,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
   }, [location]);
 
   const setTransition = (value: string) => {
+    console.log('setTransition', value);
+    if (transitionRef.current) {
+      htmlElementRef.current?.classList.remove(transitionRef.current);
+    }
+    htmlElementRef.current?.classList.add(value);
     transitionRef.current = value;
   }
 
@@ -118,9 +126,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <TransitionContext.Provider value={setTransition}>
-          {children}
-        </TransitionContext.Provider>
+      <TransitionContextProvider handler={setTransition}>
+        {children}
+      </TransitionContextProvider>
         <ScrollRestoration />
         <Scripts />
       </body>
