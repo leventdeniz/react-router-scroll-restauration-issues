@@ -24,3 +24,51 @@ body {
   line-height: 18px;
   color: rgba(100, 0, 0, 0.5);
 }
+
+@keyframes push-move-out-left {
+  from {
+    transform: translateX(0%);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes push-move-in-from-right {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0%);
+  }
+}
+
+/* pop transition */
+
+@keyframes pop-move-out-right {
+  from {
+    transform: translateX(0%);
+  }
+
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes pop-move-in-from-left {
+  from {
+    transform: translateX(-50%);
+  }
+
+  to {
+    transform: translateX(0%);
+  }
+}
+/*::view-transition-old(root) {
+  animation: 0.25s ease-in-out both push-move-out-left;
+}
+::view-transition-new(root) {
+  animation: 0.25s ease-in-out both push-move-in-from-right;
+}*/

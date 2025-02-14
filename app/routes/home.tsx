@@ -1,5 +1,5 @@
 import type { Route } from "./+types/home";
-import { Link } from 'react-router';
+import { Link, type LinkProps } from 'react-router';
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -8,38 +8,44 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
+const StyledLink = ({ children, ...props }: LinkProps) =>(
+  <Link
+    {...props}
+    className="inline-block m-2 py-2 px-3 bg-blue-600 text-white rounded-lg"
+  >
+    {children}
+  </Link>
+)
+
 export default function Home() {
   return (
-    <main>
+    <main className="container mx-auto p-6">
       <ul>
         <li>
-          <Link viewTransition to="/step1">
+          <StyledLink viewTransition to="/step1">
             step1
-          </Link>
+          </StyledLink>
         </li>
         <li>
-          <Link viewTransition to="/step2">
+          <StyledLink viewTransition to="/step2">
             step2
-          </Link>
+          </StyledLink>
         </li>
         <li>
-          <Link viewTransition to="/step3">
+          <StyledLink viewTransition to="/step3">
             step3
-          </Link>
+          </StyledLink>
         </li>
       </ul>
-      <Link
-        className="inline-block m-2 py-2 px-3 bg-blue-600 text-white rounded-lg"
-        to={{ search: 'scrollRestoration=manual' }}
-      >
+      <div className="mt-4">
+        Scroll Restoration:
+      </div>
+      <StyledLink to={{ search: 'scrollRestoration=manual' }}>
         Manual
-      </Link>
-      <Link
-        className="inline-block m-2 py-2 px-3 bg-blue-600 text-white rounded-lg"
-        to={{ search: 'scrollRestoration=auto' }}
-      >
+      </StyledLink>
+      <StyledLink to={{ search: 'scrollRestoration=auto' }}>
         Auto
-      </Link>
+      </StyledLink>
     </main>
   );
 }
