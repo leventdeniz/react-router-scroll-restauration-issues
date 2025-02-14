@@ -1,5 +1,7 @@
 import type { Route } from "./+types/home";
 import { Link, type LinkProps } from 'react-router';
+import { useContext } from 'react';
+import { TransitionContext } from '~/root';
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -8,14 +10,26 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-const StyledLink = ({ children, ...props }: LinkProps) =>(
-  <Link
-    {...props}
-    className="inline-block m-2 py-2 px-3 bg-blue-600 text-white rounded-lg"
-  >
-    {children}
-  </Link>
-)
+const StyledLink = ({ children, ...props }: LinkProps) => {
+  const context = useContext(TransitionContext);
+
+  const onForwardNavigation = () => {
+    if (context === null) {
+      return
+    }
+    context('[view-transition-name:page-default-forward]');
+  }
+
+  return(
+    <Link
+      {...props}
+      className="inline-block m-2 py-2 px-3 bg-blue-600 text-white rounded-lg"
+      onClick={onForwardNavigation}
+    >
+      {children}
+    </Link>
+  )
+}
 
 export default function Home() {
   return (

@@ -11,7 +11,7 @@ import {
 import type { Route } from "./+types/root";
 import "./app.css";
 import { scrollRestorationCookie } from '~/cookies.server';
-import { useEffect, useLayoutEffect, useRef } from 'react';
+import React, { useEffect, useLayoutEffect, useRef } from 'react';
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -54,6 +54,8 @@ export function headers({ loaderHeaders }: Route.HeadersArgs) {
 
 let scrollRestoration: typeof history.scrollRestoration = "auto";
 
+export const TransitionContext = React.createContext<((transition: string) => void) | null>(null);
+
 export function Layout({ children }: { children: React.ReactNode }) {
   const data = useRouteLoaderData<typeof loader>("root");
   useEffect(() => {
@@ -68,22 +70,26 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const htmlElementRef = useRef<HTMLHtmlElement>(null);
 
   useLayoutEffect(() => {
-    const handlePopState = (event) => {
+    const handlePopState = (event: PopStateEvent) => {
       const newIndex = event.state?.idx || 0;
 
       if (transitionRef.current) {
         htmlElementRef.current?.classList.remove(transitionRef.current);
       }
-
-      if (newIndex < currentIndex.current) {
-        console.log('Back navigation');
-        transitionRef.current = '[view-transition-name:page-default-backward]';
-      } else if (newIndex > currentIndex.current) {
-        console.log('Forward navigation');
-        transitionRef.current = '[view-transition-name:page-default-forward]';
+      if (event.hasUAVisualTransition) {
+        console.log('UA visual transition');
+        transitionRef.current = '';
+      } else {
+        if (newIndex < currentIndex.current) {
+          console.log('Back navigation');
+          transitionRef.current = '[view-transition-name:page-default-backward]';
+        } else if (newIndex > currentIndex.current) {
+          console.log('Forward navigation');
+          transitionRef.current = '[view-transition-name:page-default-forward]';
+        }
+        htmlElementRef.current?.classList.add(transitionRef.current);
       }
 
-      htmlElementRef.current?.classList.add(transitionRef.current);
       // Update the current index
       currentIndex.current = newIndex;
     };
@@ -99,6 +105,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
     currentIndex.current = history.state?.idx || 0;
   }, [location]);
 
+  const setTransition = (value: string) => {
+    transitionRef.current = value;
+  }
+
   return (
     <html lang="en" ref={htmlElementRef}>
       <head>
@@ -108,7 +118,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
+        <TransitionContext.Provider value={setTransition}>
+          {children}
+        </TransitionContext.Provider>
         <ScrollRestoration />
         <Scripts />
       </body>
