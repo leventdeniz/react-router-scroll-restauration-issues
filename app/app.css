@@ -87,3 +87,5 @@ body {
   animation: 0.25s ease-in-out both pop-move-out-right;
   z-index: 2;
 }
+
+@same-document-ua-transition: disable-atomic;
