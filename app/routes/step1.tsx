@@ -1,6 +1,3 @@
-import { Link, useNavigate, useNavigation } from 'react-router';
-import { useContext } from 'react';
-import { useTransitionContext } from '~/transition-context';
 import { TransitionLink } from '~/transition-link';
 
 export const loader = async() => {

@@ -1,7 +1,5 @@
 import type { Route } from "./+types/home";
 import { Link, type LinkProps } from 'react-router';
-import { useContext } from 'react';
-import { useTransitionContext } from '~/transition-context';
 import { TransitionLink } from '~/transition-link';
 
 export function meta({}: Route.MetaArgs) {
