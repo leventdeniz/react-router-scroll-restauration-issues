@@ -45,12 +45,12 @@ export default function Home() {
       <div className="mt-4">
         Scroll Restoration:
       </div>
-      <StyledLink to={{ search: 'scrollRestoration=manual' }}>
+      <Link to={{ search: 'scrollRestoration=manual' }} className="inline-block m-2 py-2 px-3 bg-blue-600 text-white rounded-lg">
         Manual
-      </StyledLink>
-      <StyledLink to={{ search: 'scrollRestoration=auto' }}>
+      </Link>
+      <Link to={{ search: 'scrollRestoration=auto' }} className="inline-block m-2 py-2 px-3 bg-blue-600 text-white rounded-lg">
         Auto
-      </StyledLink>
+      </Link>
     </main>
   );
 }

@@ -88,4 +88,5 @@ body {
   z-index: 2;
 }
 
-@same-document-ua-transition: disable-atomic;
+/*https://github.com/WICG/view-transitions/blob/main/default-ua-transitions.md#choosing-between-ua-and-custom-transition*/
+@same-document-ua-transition: disable-swipe;

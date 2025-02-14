@@ -129,7 +129,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <TransitionContextProvider handler={setTransition}>
         {children}
       </TransitionContextProvider>
-        <ScrollRestoration />
+      {scrollRestoration === "manual" ? <ScrollRestoration/> : null}
         <Scripts />
       </body>
     </html>
