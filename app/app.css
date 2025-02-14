@@ -7,9 +7,20 @@
 
 html,
 body {
-  @apply bg-white dark:bg-gray-950;
+  @apply bg-white;
+}
 
-  @media (prefers-color-scheme: dark) {
-    color-scheme: dark;
-  }
+.ruler {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 100vh;
+  background: rgba(255, 0, 0, 0.2);
+  border: 1px solid red;
+  writing-mode: vertical-lr;
+  text-orientation: upright;
+  text-align: center;
+  line-height: 18px;
+  color: rgba(100, 0, 0, 0.5);
 }

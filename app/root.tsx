@@ -1,14 +1,17 @@
 import {
+  data,
   isRouteErrorResponse,
   Links,
   Meta,
   Outlet,
   Scripts,
-  ScrollRestoration,
-} from "react-router";
+  ScrollRestoration, useRouteLoaderData,
+} from 'react-router';
 
 import type { Route } from "./+types/root";
 import "./app.css";
+import { scrollRestorationCookie } from '~/cookies.server';
+import { useEffect } from 'react';
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -23,7 +26,41 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const cookie =
+    (await scrollRestorationCookie.parse(request.headers.get("Cookie"))) ??
+    "auto";
+  const scrollRestorationParam =
+    new URL(request.url).searchParams.get("scrollRestoration") ?? cookie;
+  const scrollRestoration: typeof history.scrollRestoration =
+    scrollRestorationParam === "auto" || scrollRestorationParam === "manual"
+    ? scrollRestorationParam
+    : "auto";
+  return data(
+    { scrollRestoration },
+    {
+      headers: {
+        "Set-Cookie": await scrollRestorationCookie.serialize(
+          scrollRestoration
+        ),
+      },
+    }
+  );
+};
+
+export function headers({ loaderHeaders }: Route.HeadersArgs) {
+  return loaderHeaders;
+}
+
+let scrollRestoration: typeof history.scrollRestoration = "auto";
+
 export function Layout({ children }: { children: React.ReactNode }) {
+  const data = useRouteLoaderData<typeof loader>("root");
+  useEffect(() => {
+    const value = data?.scrollRestoration ?? scrollRestoration;
+    history.scrollRestoration = value;
+    scrollRestoration = value;
+  }, [data?.scrollRestoration]);
   return (
     <html lang="en">
       <head>
@@ -42,7 +79,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  return (
+    <>
+      <div className="ruler">100vh marker</div>
+      <Outlet/>
+    </>);
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
