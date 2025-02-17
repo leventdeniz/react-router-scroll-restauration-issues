@@ -8,18 +8,17 @@ export const TransitionLink = ({ children, onClick, to, viewTransition, ...props
 
   const onForwardNavigation = (e: MouseEvent<HTMLAnchorElement>) => {
     if (context === null || !Boolean(document.startViewTransition) || !viewTransition) {
-      navigate(to);
       return;
     }
-    e.preventDefault();
-    context.setTransition('[view-transition-name:page-default-forward]');
-    document.startViewTransition(() => navigate(to));
+    context.setTransition('page-default-forward');
   };
 
   return (
     <Link
+      to={to}
       {...props}
       onClick={onForwardNavigation}
+      viewTransition={viewTransition}
     >
       {children}
     </Link>);

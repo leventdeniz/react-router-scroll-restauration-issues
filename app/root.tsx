@@ -77,7 +77,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       const newIndex = event.state?.idx || 0;
 
       if (transitionRef.current) {
-        htmlElementRef.current?.classList.remove(transitionRef.current);
+        htmlElementRef.current?.style.removeProperty("view-transition-name");
       }
       if (event.hasUAVisualTransition) {
         console.log('UA visual transition');
@@ -85,12 +85,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
       } else {
         if (newIndex < currentIndex.current) {
           console.log('Back navigation');
-          transitionRef.current = '[view-transition-name:page-default-backward]';
+          transitionRef.current = 'page-default-backward';
         } else if (newIndex > currentIndex.current) {
           console.log('Forward navigation');
-          transitionRef.current = '[view-transition-name:page-default-forward]';
+          transitionRef.current = 'page-default-forward';
         }
-        htmlElementRef.current?.classList.add(transitionRef.current);
+        htmlElementRef.current?.style.setProperty("view-transition-name", transitionRef.current);
       }
 
       // Update the current index
@@ -111,9 +111,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const setTransition = (value: string) => {
     console.log('setTransition', value);
     if (transitionRef.current) {
-      htmlElementRef.current?.classList.remove(transitionRef.current);
+      htmlElementRef.current?.style.removeProperty("view-transition-name");
     }
-    htmlElementRef.current?.classList.add(value);
+    htmlElementRef.current?.style.setProperty("view-transition-name", value);
     transitionRef.current = value;
   }
 

@@ -1,7 +1,7 @@
 import { TransitionLink } from '~/transition-link';
 
 export const loader = async() => {
-  await new Promise((resolve) => setTimeout(resolve, 300));
+  // await new Promise((resolve) => setTimeout(resolve, 600));
   return {};
 };
 
